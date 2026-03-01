@@ -1,0 +1,37 @@
+{
+    "name": "chrome-page-info",
+    "version": "0.1.0",
+    "description": "Page information extractor for Chrome extensions — meta tags, Open Graph, structured data, technology detection, and SEO analysis for MV3.",
+    "author": "Zovo <hello@zovo.one>",
+    "license": "MIT",
+    "keywords": [
+        "chrome-extension",
+        "page-info",
+        "meta-tags",
+        "open-graph",
+        "seo",
+        "structured-data",
+        "manifest-v3",
+        "browser-extension",
+        "technology"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/theluckystrike/chrome-page-info.git"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "@types/chrome": "^0.0.260",
+        "typescript": "^5.3.3"
+    }
+}
