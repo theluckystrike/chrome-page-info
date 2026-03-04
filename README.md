@@ -1,8 +1,12 @@
 # chrome-page-info
 
-> Page information extractor for Chrome extensions -- meta tags, Open Graph, Twitter Card, headings, link stats, and SEO analysis for MV3.
-
+[![npm version](https://img.shields.io/npm/v/chrome-page-info)](https://npmjs.com/package/chrome-page-info)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
+[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
+
+> Page information extractor for Chrome extensions -- meta tags, Open Graph, Twitter Card, headings, link stats, and SEO analysis for MV3.
 
 ## Install
 
@@ -89,3 +93,19 @@ Returns a comprehensive page report combining title, canonical URL, meta tags, O
 ## License
 
 MIT
+
+## See Also
+
+### Related Zovo Repositories
+
+- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) - Production-ready Chrome extension starter
+- [awesome-chrome-extensions-dev](https://github.com/theluckystrike/awesome-chrome-extensions-dev) - Curated list of Chrome extension development resources
+- [chrome-data-encrypt](https://github.com/theluckystrike/chrome-data-encrypt) - AES-256 encryption for extensions
+
+### Zovo Chrome Extensions
+
+- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
+- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
+- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
+
+Visit [zovo.one](https://zovo.one) for more information.
