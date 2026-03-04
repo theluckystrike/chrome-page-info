@@ -1,182 +1,91 @@
 # chrome-page-info
 
-[![npm version](https://img.shields.io/npm/v/chrome-page-info)](https://npmjs.com/package/chrome-page-info)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Chrome Web Extension](https://img.shields.io/badge/Chrome-Web%20Extension-orange.svg)](https://developer.chrome.com/docs/extensions/)
-[![CI Status](https://github.com/theluckystrike/chrome-page-info/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/chrome-page-info/actions)
-[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
-[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
-[![GitHub Stars](https://img.shields.io/github/stars/theluckystrike/chrome-page-info?style=social)](https://github.com/theluckystrike/chrome-page-info)
+> Page information extractor for Chrome extensions -- meta tags, Open Graph, Twitter Card, headings, link stats, and SEO analysis for MV3.
 
-> Page information extractor for Chrome extensions — meta tags, Open Graph, structured data, technology detection, and SEO analysis for MV3.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**chrome-page-info** provides utilities to extract comprehensive page information including metadata, favicon, security details, Open Graph data, and technology detection — all with a simple, type-safe API.
-
-Part of the [Zovo](https://zovo.one) developer tools family.
-
-## Features
-
-- ✅ **Page Metadata** - Extract title, URL, favicon
-- ✅ **Open Graph** - Get OG tags, images, descriptions
-- ✅ **Security Info** - Protocol, certificate details
-- ✅ **Structured Data** - Parse JSON-LD and microdata
-- ✅ **Technology Detection** - Detect frameworks and libraries
-- ✅ **SEO Analysis** - Meta tags, descriptions, keywords
-- ✅ **TypeScript Support** - Full type definitions included
-
-## Installation
+## Install
 
 ```bash
 npm install chrome-page-info
 ```
 
-## Quick Start
+## Usage
 
-```typescript
-import { getPageInfo } from 'chrome-page-info';
+```ts
+import { PageInfo } from 'chrome-page-info';
 
-const info = await getPageInfo(tabId);
-console.log(info.title, info.url, info.favicon);
-```
+// Get all meta tags as key-value pairs
+const meta = PageInfo.getMeta();
+console.log(meta['description']);
+console.log(meta['viewport']);
 
-## Usage Examples
+// Extract Open Graph data
+const og = PageInfo.getOpenGraph();
+console.log(og.title, og.image, og.description);
 
-### Get Page Info
+// Extract Twitter Card data
+const twitter = PageInfo.getTwitterCard();
+console.log(twitter.card, twitter.site);
 
-```typescript
-import { getPageInfo } from 'chrome-page-info';
+// Get page structure
+const headings = PageInfo.getHeadings();
+headings.forEach((h) => console.log(`${'#'.repeat(h.level)} ${h.text}`));
 
-const info = await getPageInfo(tabId);
-console.log(info.title, info.url, info.favicon);
-```
+// SEO analysis
+const links = PageInfo.getLinkStats();
+console.log(`${links.internal} internal, ${links.external} external links`);
 
-### Get Metadata
+const missingAlt = PageInfo.getImagesWithoutAlt();
+console.log(`${missingAlt.length} images missing alt text`);
 
-```typescript
-const meta = await getPageInfo(tabId, {
-  metadata: true,
-});
-
-console.log(meta.ogTitle, meta.ogImage, meta.description);
-```
-
-### Get Security Info
-
-```typescript
-const security = await getPageInfo(tabId, {
-  security: true,
-});
-
-console.log(security.protocol, security.certIssuer, security.isSecure);
-```
-
-### Get Structured Data
-
-```typescript
-const data = await getPageInfo(tabId, {
-  structuredData: true,
-});
-
-console.log(data.jsonLd, data.microdata);
-```
-
-### Technology Detection
-
-```typescript
-const tech = await getPageInfo(tabId, {
-  technologies: true,
-});
-
-console.log(tech.frameworks, tech.libraries, tech.cms);
+// Get a complete page report
+const report = PageInfo.getFullReport();
+console.log(JSON.stringify(report, null, 2));
 ```
 
 ## API
 
-### getPageInfo Options
+### `class PageInfo`
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| metadata | boolean | false | Include Open Graph meta |
-| security | boolean | false | Include security info |
-| favicon | boolean | true | Include favicon URL |
-| structuredData | boolean | false | Include JSON-LD/microdata |
-| technologies | boolean | false | Detect frameworks/libraries |
+All methods are static and operate on the current `document`.
 
-### Return Properties
+#### `static getMeta(): Record<string, string>`
 
-- `title` - Page title
-- `url` - Page URL
-- `favicon` - Favicon URL
-- `ogTitle`, `ogImage`, `ogDescription` - Open Graph
-- `protocol` - Security protocol
-- `certIssuer` - Certificate issuer
-- `jsonLd` - JSON-LD structured data
-- `technologies` - Detected technologies
+Returns all `<meta>` tags as a key-value object. Keys are derived from the `name`, `property`, or `http-equiv` attribute; values from the `content` attribute.
 
-## Manifest
+#### `static getOpenGraph(): Record<string, string>`
 
-```json
-{
-  "permissions": ["tabCapture", "tabs"]
-}
-```
+Returns Open Graph (`og:*`) meta properties as a key-value object with the `og:` prefix stripped from keys.
 
-## Browser Support
+#### `static getTwitterCard(): Record<string, string>`
 
-- Chrome 90+
-- Manifest V3
+Returns Twitter Card (`twitter:*`) meta properties as a key-value object with the `twitter:` prefix stripped from keys.
 
-## Contributing
+#### `static getTitle(): string`
 
-Contributions are welcome! Please follow these steps:
+Returns the page title (`document.title`).
 
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/page-info-feature`
-3. **Make** your changes
-4. **Test** your changes: `npm test`
-5. **Commit** your changes: `git commit -m 'Add new feature'`
-6. **Push** to the branch: `git push origin feature/page-info-feature`
-7. **Submit** a Pull Request
+#### `static getCanonical(): string | null`
 
-### Development Setup
+Returns the canonical URL from `<link rel="canonical">`, or `null` if none exists.
 
-```bash
-# Clone the repository
-git clone https://github.com/theluckystrike/chrome-page-info.git
-cd chrome-page-info
+#### `static getHeadings(): Array<{ level: number; text: string }>`
 
-# Install dependencies
-npm install
+Returns all headings (`h1` through `h6`) as an array of objects with `level` (1--6) and `text` content.
 
-# Build
-npm run build
-```
+#### `static getLinkStats(): { internal: number; external: number; total: number }`
 
-## Built by Zovo
+Counts all anchor links on the page and classifies them as internal or external based on hostname comparison.
 
-Part of the [Zovo](https://zovo.one) developer tools family — privacy-first Chrome extensions built by developers, for developers.
+#### `static getImagesWithoutAlt(): HTMLImageElement[]`
 
-## See Also
+Returns an array of `<img>` elements that have no `alt` attribute or an empty `alt` attribute.
 
-### Related Zovo Repositories
+#### `static getFullReport(): Record<string, unknown>`
 
-- [chrome-storage-plus](https://github.com/theluckystrike/chrome-storage-plus) - Type-safe storage wrapper
-- [chrome-network-monitor](https://github.com/theluckystrike/chrome-network-monitor) - Network monitoring
-- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) - Extension template
-
-### Zovo Chrome Extensions
-
-- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
-- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
-- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
-
-Visit [zovo.one](https://zovo.one) for more information.
+Returns a comprehensive page report combining title, canonical URL, meta tags, Open Graph, Twitter Card, headings, link stats, and a count of images missing alt text.
 
 ## License
 
-MIT — [Zovo](https://zovo.one)
-
----
-
-*Built by developers, for developers. No compromises on privacy.*
+MIT
