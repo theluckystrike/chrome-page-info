@@ -9,6 +9,8 @@
 
 > Page information extractor for Chrome extensions -- meta tags, Open Graph, Twitter Card, headings, link stats, and SEO analysis for MV3.
 
+Part of the [Zovo](https://zovo.one) developer tools family.
+
 ## Install
 
 ```bash
@@ -122,3 +124,7 @@ Built by [Zovo](https://zovo.one)
 - [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
 
 Visit [zovo.one](https://zovo.one) for more information.
+
+---
+
+Built by [Zovo](https://zovo.one)
