@@ -1,128 +1,103 @@
 # chrome-page-info
 
 [![npm version](https://img.shields.io/npm/v/chrome-page-info)](https://npmjs.com/package/chrome-page-info)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
-[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
 [![GitHub Stars](https://img.shields.io/github/stars/theluckystrike/chrome-page-info?style=social)](https://github.com/theluckystrike/chrome-page-info)
 
-> Page information extractor for Chrome extensions -- meta tags, Open Graph, Twitter Card, headings, link stats, and SEO analysis for MV3.
+Page information extractor for Chrome extensions. Pulls meta tags, Open Graph, Twitter Card data, heading structure, link stats, and accessibility checks from any page. Built for Manifest V3.
 
-Part of the [Zovo](https://zovo.one) developer tools family.
-
-## Install
+INSTALL
 
 ```bash
 npm install chrome-page-info
 ```
 
-## Usage
+USAGE
 
 ```ts
 import { PageInfo } from 'chrome-page-info';
 
-// Get all meta tags as key-value pairs
+// All meta tags as key-value pairs
 const meta = PageInfo.getMeta();
 console.log(meta['description']);
 console.log(meta['viewport']);
 
-// Extract Open Graph data
+// Open Graph properties with the og: prefix stripped
 const og = PageInfo.getOpenGraph();
 console.log(og.title, og.image, og.description);
 
-// Extract Twitter Card data
+// Twitter Card properties with the twitter: prefix stripped
 const twitter = PageInfo.getTwitterCard();
 console.log(twitter.card, twitter.site);
 
-// Get page structure
+// Page title and canonical URL
+const title = PageInfo.getTitle();
+const canonical = PageInfo.getCanonical();
+
+// Heading outline
 const headings = PageInfo.getHeadings();
 headings.forEach((h) => console.log(`${'#'.repeat(h.level)} ${h.text}`));
 
-// SEO analysis
+// Link breakdown
 const links = PageInfo.getLinkStats();
 console.log(`${links.internal} internal, ${links.external} external links`);
 
-const missingAlt = PageInfo.getImagesWithoutAlt();
-console.log(`${missingAlt.length} images missing alt text`);
+// Images missing alt text
+const missing = PageInfo.getImagesWithoutAlt();
+console.log(`${missing.length} images without alt`);
 
-// Get a complete page report
+// Full page report combining everything above
 const report = PageInfo.getFullReport();
 console.log(JSON.stringify(report, null, 2));
 ```
 
-## API
+API
 
-### `class PageInfo`
+All methods on PageInfo are static. They read from the current document and return plain data.
 
-All methods are static and operate on the current `document`.
+PageInfo.getMeta() returns Record<string, string>
+Collects every meta tag on the page. Keys come from the name, property, or http-equiv attribute. Values come from content.
 
-#### `static getMeta(): Record<string, string>`
+PageInfo.getOpenGraph() returns Record<string, string>
+Reads meta tags whose property starts with og: and returns them as a flat object with the prefix removed.
 
-Returns all `<meta>` tags as a key-value object. Keys are derived from the `name`, `property`, or `http-equiv` attribute; values from the `content` attribute.
+PageInfo.getTwitterCard() returns Record<string, string>
+Reads meta tags whose name starts with twitter: and returns them as a flat object with the prefix removed.
 
-#### `static getOpenGraph(): Record<string, string>`
+PageInfo.getTitle() returns string
+Returns document.title.
 
-Returns Open Graph (`og:*`) meta properties as a key-value object with the `og:` prefix stripped from keys.
+PageInfo.getCanonical() returns string or null
+Returns the href from the link rel=canonical element, or null when no canonical is set.
 
-#### `static getTwitterCard(): Record<string, string>`
+PageInfo.getHeadings() returns Array of { level, text }
+Walks every h1 through h6 on the page and returns an array of objects with a numeric level (1 to 6) and the trimmed text content.
 
-Returns Twitter Card (`twitter:*`) meta properties as a key-value object with the `twitter:` prefix stripped from keys.
+PageInfo.getLinkStats() returns { internal, external, total }
+Counts all anchor elements with an href. Classifies each link as internal or external by comparing hostnames.
 
-#### `static getTitle(): string`
+PageInfo.getImagesWithoutAlt() returns HTMLImageElement[]
+Returns img elements that have no alt attribute or an empty one. Useful for accessibility audits.
 
-Returns the page title (`document.title`).
+PageInfo.getFullReport() returns Record<string, unknown>
+Runs every method above and returns a single object with title, canonical, meta, og, twitter, headings, links, and a count of images missing alt text.
 
-#### `static getCanonical(): string | null`
+CONTRIBUTING
 
-Returns the canonical URL from `<link rel="canonical">`, or `null` if none exists.
+Contributions are welcome. Fork the repo, create a branch, and open a pull request.
 
-#### `static getHeadings(): Array<{ level: number; text: string }>`
+```
+git clone https://github.com/theluckystrike/chrome-page-info.git
+cd chrome-page-info
+npm install
+npm run build
+```
 
-Returns all headings (`h1` through `h6`) as an array of objects with `level` (1--6) and `text` content.
+LICENSE
 
-#### `static getLinkStats(): { internal: number; external: number; total: number }`
-
-Counts all anchor links on the page and classifies them as internal or external based on hostname comparison.
-
-#### `static getImagesWithoutAlt(): HTMLImageElement[]`
-
-Returns an array of `<img>` elements that have no `alt` attribute or an empty `alt` attribute.
-
-#### `static getFullReport(): Record<string, unknown>`
-
-Returns a comprehensive page report combining title, canonical URL, meta tags, Open Graph, Twitter Card, headings, link stats, and a count of images missing alt text.
-
-## License
-
-MIT
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## See Also
-
-### Related Zovo Repositories
-
-- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) - Production-ready Chrome extension starter
-- [awesome-chrome-extensions-dev](https://github.com/theluckystrike/awesome-chrome-extensions-dev) - Curated list of Chrome extension development resources
-- [chrome-data-encrypt](https://github.com/theluckystrike/chrome-data-encrypt) - AES-256 encryption for extensions
-
-### Zovo Chrome Extensions
-
-- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
-- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
-- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
-
-Visit [zovo.one](https://zovo.one) for more information.
+MIT. See LICENSE file for details.
 
 ---
 
-Built by [Zovo](https://zovo.one)
+Part of the Zovo open source family at https://zovo.one
